@@ -2,6 +2,7 @@
 * Microscope stage controller via joysctick and Ramps 1.4
 * List of hardware: Arduino Mega 2560, Ramps 1.4, A4988 stepper drivers, Joystick with B5K potentiometers 
 * arduino Mega 2560 and Ramps 1.4 pin mappings https://reprap.org/mediawiki/images/3/3f/Arduinomegapololushieldschematic.png
+* used stepper library: https://github.com/laurb9/StepperDriver
 */
 #include <Arduino.h>
 
