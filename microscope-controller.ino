@@ -32,9 +32,7 @@ void setup() {
   Serial.begin(9600);
 
   pinMode(X_ENABLE, OUTPUT);
-  digitalWrite(X_ENABLE, LOW);
   pinMode(Y_ENABLE, OUTPUT);
-  digitalWrite(Y_ENABLE, LOW);
   
   xStepper.begin(RPM);
   xStepper.enable();
@@ -57,17 +55,31 @@ void loop() {
     // added else if so that only one axis can be moved at once
     // this is because cannot really run them same time in sync perfectly
     if (moveX > XY_EC || moveX < -XY_EC) {
+      enableSteppers();
       xStepper.setRPM(abs(moveX));
       xStepper.move(moveX);
     } else if (moveY > XY_EC || moveY < -XY_EC) {
+      enableSteppers();
       yStepper.setRPM(abs(moveY));
       yStepper.move(moveY);
+    } else {
+      disableSteppers(); // we want to be able to use stage manual adjusters normally too
     }
-
     
     // Serial.print("X: ");
     // Serial.print(moveX);
     // Serial.print(" ");
     // Serial.print("Y: ");
     // Serial.println(moveY);
+}
+
+
+void enableSteppers() {
+  digitalWrite(X_ENABLE, LOW);
+  digitalWrite(Y_ENABLE, LOW);
+}
+
+void disableSteppers() {
+  digitalWrite(X_ENABLE, HIGH);
+  digitalWrite(Y_ENABLE, HIGH);
 }
