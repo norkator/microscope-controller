@@ -53,10 +53,14 @@ void loop() {
     int moveX = (jsXValue - X_ZERO);
     int moveY = (jsYValue - Y_ZERO);
 
+
+    // added else if so that only one axis can be moved at once
+    // this is because cannot really run them same time in sync perfectly
     if (moveX > XY_EC || moveX < -XY_EC) {
+      xStepper.setRPM(abs(moveX));
       xStepper.move(moveX);
-    }
-    if (moveY > XY_EC || moveY < -XY_EC) {
+    } else if (moveY > XY_EC || moveY < -XY_EC) {
+      yStepper.setRPM(abs(moveY));
       yStepper.move(moveY);
     }
 
