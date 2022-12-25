@@ -17,11 +17,20 @@
 #define Y_STEP A6
 #define Y_ENABLE A2
 
+#define JS_X A3
+#define JS_Y A4
+
+static int X_ZERO = 513; // raw output value when stick X is at neutral position
+static int Y_ZERO = 478; // raw output value when stick Y is at neutral position
+static int XY_EC = 20; // + - range which is ignored
+
 #include "A4988.h"
 A4988 xStepper(MOTOR_STEPS, X_DIR, X_STEP);
 A4988 yStepper(MOTOR_STEPS, Y_DIR, Y_STEP);
 
 void setup() {
+  Serial.begin(9600);
+
   pinMode(X_ENABLE, OUTPUT);
   digitalWrite(X_ENABLE, LOW);
   pinMode(Y_ENABLE, OUTPUT);
@@ -31,8 +40,30 @@ void setup() {
   xStepper.enable();
   yStepper.begin(RPM);
   yStepper.enable();
+
+  xStepper.setMicrostep(8); // set microstep mode to 1:8
+  yStepper.setMicrostep(8); // set microstep mode to 1:8
 }
 
 void loop() {
-    delay(1000);
+    // delay(500);
+    int jsXValue = analogRead(JS_X);
+    int jsYValue = analogRead(JS_Y);
+
+    int moveX = (jsXValue - X_ZERO);
+    int moveY = (jsYValue - Y_ZERO);
+
+    if (moveX > XY_EC || moveX < -XY_EC) {
+      xStepper.move(moveX);
+    }
+    if (moveY > XY_EC || moveY < -XY_EC) {
+      yStepper.move(moveY);
+    }
+
+    
+    // Serial.print("X: ");
+    // Serial.print(moveX);
+    // Serial.print(" ");
+    // Serial.print("Y: ");
+    // Serial.println(moveY);
 }
